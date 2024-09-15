@@ -25,11 +25,11 @@ Route::middleware('auth:api')->prefix('/v1')->group( function () {
 Route::prefix('public')->group( function () {
     Route::post('/student/web-socket', function (Request $request) {
         try {
-            PaymentResponse::dispatch($request->user());
+            \App\Events\PaymentResponse::dispatch($request->user());
         } catch (Exception $e) {
             dd($e->getMessage());
         }
-        Log::info("SOCKET ENVIADO");
+        \Illuminate\Support\Facades\Log::info("SOCKET ENVIADO");
     });
    Route::post('prelogin',[\App\Http\Controllers\AuthFrontEndApplicationController::class,"preLoginAction"]) ;
    Route::post('create-student',[\App\Http\Controllers\StudentController::class,"criarUserEstudanteeContaAsaas"]) ;
