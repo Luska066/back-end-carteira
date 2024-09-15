@@ -159,7 +159,9 @@ class AuthFrontEndApplicationController extends Controller
         if($student == null){
             throw new \Exception("Estudante não encontrado");
         }
+        Log::info('student',[$student]);
         $course = StudentCurso::where('student_id', $student->id)->first();
+        Log::info('course',[$course]);
         try {
             $carteira = Carteira::query()->updateOrCreate([
                 'student_id' => $student->id,
@@ -176,6 +178,7 @@ class AuthFrontEndApplicationController extends Controller
                 'dataInicioCurso' => $course->dataInicioCurso,
                 'dataFimCurso' => $course->dataFimCurso,
             ]);
+            Log::info("carteira");
             $asaas_cobranca = AsaasCobranca::where([
                 'asaas_client_id' => $student->asaas_client->id,
                 'billingType' => BillingType::PIX->value,
@@ -245,7 +248,9 @@ class AuthFrontEndApplicationController extends Controller
         } catch (\Throwable $e) {
             DB::rollback();
             Log::info("Erro ao criar carteira", [
-                "error" => $e->getMessage()
+                "error" => $e->getMessage(),
+                "line" => $e->getLine(),
+                "file" => $e->getFile(),
             ]);
             return [
                 "success" => false,
