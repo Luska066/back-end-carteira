@@ -10,10 +10,19 @@
                 </ol>
             </div>
             <div class="card-body">
-                <form action="{{ route('students.update', compact('student')) }}" method="POST" class="m-0 p-0">
+
+                <form action="{{ route('students.update', compact('student')) }}" method="POST" enctype="multipart/form-data" class="m-0 p-0">
                     @method('PUT')
                     @csrf
                     <div class="card-body">
+                        <div class="mb-3">
+                            <img style="border-radius: 10px" src="{{\Illuminate\Support\Facades\Storage::url($student->image_url)}}">
+                            <input  type="file" name="image" id="image" class=" form-control"
+                                   value="{{@old('image', $student->name)}}" required/>
+                            @if($errors->has('image'))
+                                <div class='error small text-danger'>{{$errors->first('image')}}</div>
+                            @endif
+                        </div>
                         <div class="mb-3">
                             <label for="name" class="form-label">Name:</label>
                             <input disabled type="text" name="name" id="name" class="form-control"

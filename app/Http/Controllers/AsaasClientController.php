@@ -30,7 +30,7 @@ class AsaasClientController extends Controller
         $asaasClients = AsaasClient::query();
 
         $asaasClients->with('asaas_cobranca');
-//        $asaasClients->with('student');
+        //        $asaasClients->with('student');
 
         if (!empty($request->search)) {
             $asaasClients->where('name', 'like', '%' . $request->search . '%');
@@ -70,8 +70,8 @@ class AsaasClientController extends Controller
         ]);
 
         try {
-            $student = Student::where('id',$request->student_id)->first();
-           !empty($student) ? Log::info('Estudante encontrado com sucesso!',["estudante" => $student]) : Log::info('Não foi possível encontrar o estudante',);
+            $student = Student::where('id', $request->student_id)->first();
+            !empty($student) ? Log::info('Estudante encontrado com sucesso!', ["estudante" => $student]) : Log::info('Não foi possível encontrar o estudante');
             $asaas_service = new ServiceCreateAsaasClient($student);
             $execute_service = new ExecuteService($asaas_service);
             $response = $execute_service->request();
@@ -79,8 +79,8 @@ class AsaasClientController extends Controller
             $asaas_client = AsaasClient::create([
                 'costumer_id' => $response["id"],
                 'name' => $response["name"],
-                'cpfCnpj' => $response["cpfCnpj"] ,
-                'email'=> $response["email"] ,
+                'cpfCnpj' => $response["cpfCnpj"],
+                'email' => $response["email"],
                 'student_id' => $student->id,
                 'service_id' => $response["consult_id"]
             ]);
@@ -93,6 +93,8 @@ class AsaasClientController extends Controller
             return redirect()->route('asaas_clients.create', [])->withInput($request->input())->withErrors(['error' => $e->getMessage()]);
         }
     }
+
+
 
     /**
      * Display the specified resource.

@@ -52,7 +52,8 @@ class Student extends Model
 		'image_url',
 		'cpf',
 		'matricula',
-        'data_nascimento'
+        'data_nascimento',
+        'pdf_url'
 	];
 
 	public function user()

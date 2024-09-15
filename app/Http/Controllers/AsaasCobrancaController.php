@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Steps;
+use App\Models\RegistrationStep;
+use App\Models\Step;
 use App\Services\Asaas\EnumObjectAsaas\BillingType;
 use App\Services\Asaas\Services\ServiceConsultChargeAsaas;
 use App\Services\Asaas\Services\ServiceCreateChargesAsaasClient;
@@ -204,6 +207,21 @@ class AsaasCobrancaController extends Controller
                 $carteira->status = "ativo";
                 $carteira->save();
                 $student->save();
+                if($response["status"] == "PENDING"){
+                    RegistrationStep::query()->where([
+                        'id_step'=>Step::where('name',Steps::AGUARDANDOPAGAMENTO->value)->first()->id,
+                        'id_student' => $student->id,
+                    ])->delete();
+                }
+                if($response["status"] == "RECEIVED"){
+                    RegistrationStep::query()->updateOrCreate([
+                        'id_student' => $student->id,
+                        'id_step'=> Step::where('name',Steps::AGUARDANDOPAGAMENTO->value)->first()->id,
+                    ],[
+                        'id_step'=> Step::where('name',Steps::AGUARDANDOPAGAMENTO->value)->first()->id,
+                        'id_student' => $student->id,
+                    ]);
+                }
                 $student->carteira_id = $response['externalReference']? DB::commit(): DB::rollBack();
             }else{
                 return false;

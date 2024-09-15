@@ -120,7 +120,7 @@ class ExecuteService
             'service_id'   =>  $this->product->getId(),
             'payload'   =>  '',
             'exec'  =>  0,
-            "user_id" => auth()->user()->id
+            "user_id" => auth()?->user()?->id ?? null
         ]);
 
         $service->update([

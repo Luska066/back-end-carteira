@@ -118,79 +118,92 @@
                             @endif
                         </div>
                     </div>
-            <div>
-                <div class="d-flex flex-row align-items-center justify-content-between">
-                    <a href="{{ route('carteiras.index', []) }}" class="btn btn-light">Cancel</a>
-                </div>
+                    <div>
+                        <div class="d-flex flex-row align-items-center justify-content-between">
+                            <a href="{{ route('carteiras.index', []) }}" class="btn btn-light">Cancel</a>
+                        </div>
+                    </div>
+                </form>
             </div>
+        </div>
+        <div class="card">
+            <form method="POST" action="{{route('master.generate-card',$carteira->student_id)}}" class="p-3 d-flex flex-row  align-items-center justify-content-between">
+                @csrf
+                @method('PUT')
+                <h2>Carteira PDF</h2>
+                <button type="submit" class="btn btn-primary">@lang('Gerar PDF')</button>
             </form>
-        </div>
-    </div>
-    <div class="card">
-        <div class="p-3 d-flex flex-row  align-items-center justify-content-between">
-            <h2>Cobrança</h2>
-            <button type="submit" class="btn btn-primary">@lang('Gerar PDF')</button>
+            <section class="d-flex align-items-center justify-content-center">
+                @if($carteira->carteiraPdfUrl != null)
+                    <embed src="{{Storage::url(str_replace('storage/','',$carteira->carteiraPdfUrl))}}" type="application/pdf" width="1080px" height="620px">
+                @endif
+            </section>
 
         </div>
-        {{-- Setup data for datatables --}}
-        @php
-            $heads = [
-                'Id Charge Asaas',
-                'Customer Id',
-                ['label' => 'Forma de Pagamento', 'width' => 10],
-                ['label' => 'Valor', 'no-export' => true, 'width' => 5],
-                ['label' => 'Data de Vencimento', 'no-export' => true, 'width' => 5],
-                ['label' => 'Vizualizar Boleto de Pagamento', 'no-export' => true, 'width' => 20],
-                ['label' => 'Status', 'no-export' => true, 'width' => 5],
-                ['label' => 'Atualizar Status', 'no-export' => true, 'width' => 5],
-            ];
-
-
-            $btnDelete = '<button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete">
-                              <i class="fa fa-lg fa-fw fa-trash"></i>
-                          </button>';
-            $btnDetails = '<button class="btn btn-xs btn-default text-teal mx-1 shadow" title="Details">
-                               <i class="fa fa-lg fa-fw fa-eye"></i>
-                           </button>';
-
-           $cobrancas = $carteira->cobranca()->get();
-            $tableRow = [];
-            foreach ($cobrancas as $dataCobranca){
-                $vizualizar = "<a href='".$dataCobranca->invoiceUrl."' class='btn btn-xs btn-primary  mx-1 shadow' title='Details'>
-                        VIZUALIZAR
-                           </a>";
-                $btnEdit = "<div id='refresh_$dataCobranca->id' onclick='refreshPage($dataCobranca->id)' class='btn btn-xs btn-default text-primary mx-1 shadow' title='Edit'>
-                            <i id='spin_$dataCobranca->id' class='fa fa-lg fa-fw fa-sync-alt'></i>
-                        </div>";
-                $tableRow[] = [
-                    $dataCobranca->id_charge,
-                    $dataCobranca->asaas_client()->first()->costumer_id,
-                    $dataCobranca->billingType,
-                    $dataCobranca->value,
-                    $dataCobranca->dueDate,
-                    $vizualizar,
-                    $dataCobranca->status,
-                    $btnEdit
+        <div class="card">
+            <div class="p-3 d-flex flex-row  align-items-center justify-content-between">
+                <h2>Cobrança</h2>
+            </div>
+            {{-- Setup data for datatables --}}
+            @php
+                $heads = [
+                    'Id Charge Asaas',
+                    'Customer Id',
+                    ['label' => 'Forma de Pagamento', 'width' => 10],
+                    ['label' => 'Valor', 'no-export' => true, 'width' => 5],
+                    ['label' => 'Data de Vencimento', 'no-export' => true, 'width' => 5],
+                    ['label' => 'Vizualizar Boleto de Pagamento', 'no-export' => true, 'width' => 20],
+                    ['label' => 'Status', 'no-export' => true, 'width' => 5],
+                    ['label' => 'Atualizar Status', 'no-export' => true, 'width' => 5],
                 ];
-            }
-            $config = [
-                'data' => $tableRow,
-                'order' => [[1, 'asc']],
-                "paging" => true,
-            ];
-        @endphp
-        <div class="m-3">
-            <x-adminlte-datatable id="table3" hoverable :heads="$heads" head-theme="light" striped :config="$config">
-                @foreach($config['data'] as $row)
-                    <tr>
-                        @foreach($row as $cell)
-                            <td>{!! $cell !!}</td>
-                        @endforeach
-                    </tr>
-                @endforeach
-            </x-adminlte-datatable>
+
+
+                $btnDelete = '<button class="btn btn-xs btn-default text-danger mx-1 shadow" title="Delete">
+                                  <i class="fa fa-lg fa-fw fa-trash"></i>
+                              </button>';
+                $btnDetails = '<button class="btn btn-xs btn-default text-teal mx-1 shadow" title="Details">
+                                   <i class="fa fa-lg fa-fw fa-eye"></i>
+                               </button>';
+
+               $cobrancas = $carteira->cobranca()->get();
+                $tableRow = [];
+                foreach ($cobrancas as $dataCobranca){
+                    $vizualizar = "<a href='".$dataCobranca->invoiceUrl."' class='btn btn-xs btn-primary  mx-1 shadow' title='Details'>
+                            VIZUALIZAR
+                               </a>";
+                    $btnEdit = "<div id='refresh_$dataCobranca->id' onclick='refreshPage($dataCobranca->id)' class='btn btn-xs btn-default text-primary mx-1 shadow' title='Edit'>
+                                <i id='spin_$dataCobranca->id' class='fa fa-lg fa-fw fa-sync-alt'></i>
+                            </div>";
+                    $tableRow[] = [
+                        $dataCobranca->id_charge,
+                        $dataCobranca->asaas_client()->first()->costumer_id,
+                        $dataCobranca->billingType,
+                        $dataCobranca->value,
+                        $dataCobranca->dueDate,
+                        $vizualizar,
+                        $dataCobranca->status,
+                        $btnEdit
+                    ];
+                }
+                $config = [
+                    'data' => $tableRow,
+                    'order' => [[1, 'asc']],
+                    "paging" => true,
+                ];
+            @endphp
+            <div class="m-3">
+                <x-adminlte-datatable id="table3" hoverable :heads="$heads" head-theme="light" striped
+                                      :config="$config">
+                    @foreach($config['data'] as $row)
+                        <tr>
+                            @foreach($row as $cell)
+                                <td>{!! $cell !!}</td>
+                            @endforeach
+                        </tr>
+                    @endforeach
+                </x-adminlte-datatable>
+            </div>
         </div>
-    </div>
     </div>
 
     <script>
@@ -204,7 +217,7 @@
             refreshButton.style.animationIterationCount = "infinite";
             axios.put(`/asaas_cobranca/${dataId}/asaas/service`)
                 .then((response) => {
-                    if(!response.data.success){
+                    if (!response.data.success) {
                         refreshButton.style.animationName = "none";
                         Swal.fire({
                             position: "top-end",
@@ -214,12 +227,12 @@
                             timer: 1500
                         });
                     }
-                    if(response.data.success){
+                    if (response.data.success) {
                         Swal.fire({
                             position: "top-end",
                             icon: "success",
                             title: "Cobrança atualizada com sucesso",
-                            text:"Em poucos instantes a página será recarregada!",
+                            text: "Em poucos instantes a página será recarregada!",
                             showConfirmButton: false,
                             timer: 1500
                         });

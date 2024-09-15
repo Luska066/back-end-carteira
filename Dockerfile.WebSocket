@@ -1,0 +1,9 @@
+FROM quay.io/soketi/soketi:1.4-16-debian
+
+EXPOSE 6001 9601
+
+ENV APP_KEY=your_app_key_here
+
+CMD ["node", "/usr/src/app", "--port", "6001", "--admin-port", "9601"]
+
+

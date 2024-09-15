@@ -16,6 +16,9 @@ Route::middleware('redirectadmin')->group(function (){
     \San\Crud\Crud::routes();
     Route::get('/home', [App\Http\Controllers\UserController::class, 'index'])->name('home');
 });
+Route::get('',function ( ){
+   return redirect()->route('login');
+});
 Auth::routes();
 
 

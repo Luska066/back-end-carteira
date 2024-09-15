@@ -60,7 +60,6 @@
                     <div class="d-flex flex-row align-items-center justify-content-between">
                         <select name="course_id" id="course_id" class="form-control form-select flex-grow-1" required>
                          ${data.map(courses => {
-                console.log(courses)
                              return `
                                 <option value="${courses.id}">
                                     ${courses.nomeCurso}

@@ -19,3 +19,8 @@ Route::middleware('auth:api')->prefix('/v1')->group( function () {
         require 'api/student_api_v1.php';
     });
 });
+
+Route::prefix('public')->group( function () {
+   Route::post('prelogin',[\App\Http\Controllers\AuthFrontEndApplicationController::class,"preLoginAction"]) ;
+   Route::post('create-student',[\App\Http\Controllers\StudentController::class,"criarUserEstudanteeContaAsaas"]) ;
+});

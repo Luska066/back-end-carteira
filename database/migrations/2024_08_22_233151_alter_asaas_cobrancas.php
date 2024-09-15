@@ -15,7 +15,7 @@ return new class extends Migration
             $table->renameColumn('customer','id_charge');
         });
         Schema::table('carteiras', function (Blueprint $table) {
-            $table->unsignedBigInteger('asaas_cobranca_id')->change();
+            $table->unsignedBigInteger('asaas_cobranca_id');
             $table->foreign('asaas_cobranca_id')
                 ->references('id')
                 ->on('asaas_cobrancas')

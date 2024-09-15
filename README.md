@@ -47,3 +47,14 @@ Na Visualização do Estudante na tela students/{id}/edit ou /show :
 
 
 # back-end-carteira
+
+
+<h1>Para rodar o websocket</h1>
+    
+    Personalize o APP_KEY APP_ID APP_SECRET
+
+    docker run -p 6001:6001 -p 9601:9601 -e SOKETI_DEFAULT_APP_KEY=6e1911549c4e -e SOKETI_DEFAULT_APP_SECRET=ikwhrxtoc22vboqhtun0 -e SOKETI_DEFAULT_APP_ID=242124 quay.io/soketi/soketi:1.4-16-debian
+
+<h1>Para rodar gerador de carteira</h1>
+    
+    docker run -p 1458:1458 --name gerar-carteira luska066/gerar-carteira-pdf

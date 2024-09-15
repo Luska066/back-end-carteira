@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Steps;
 use App\Models\AsaasCobranca;
+use App\Models\RegistrationStep;
+use App\Models\Step;
 use App\Models\Student;
 use App\Models\StudentCurso;
 use App\Services\Asaas\EnumObjectAsaas\BillingType;
@@ -114,6 +117,12 @@ class CarteiraController extends Controller
             $carteira->asaas_cobranca_id = $asaas_cobranca->id;
             $carteira->save();
             $student->save();
+            RegistrationStep::query()->updateOrCreate([
+                'id_student' => $student->id,
+            ],[
+                'id_step'=>Step::where('name',Steps::FOTO->value)->first()->id,
+                'id_student' => $student->id,
+            ]);
 
             $student->carteira_id = $response['externalReference']? DB::commit(): DB::rollBack();
             DB::commit();

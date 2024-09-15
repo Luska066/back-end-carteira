@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string("cargo")->default("STUDENT")->change();
+        Schema::table('servicos', function(Blueprint $table){
+            $table->integer('user_id')->nullable()->change();
         });
     }
 
@@ -21,8 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn("cargo");
-        });
+        //
     }
 };
