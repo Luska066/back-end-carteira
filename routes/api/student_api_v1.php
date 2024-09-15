@@ -25,14 +25,7 @@ Route::get('/student/has/execute/payment', [AuthFrontEndApplicationController::c
 Route::post('/student/download/card',[AuthFrontEndApplicationController::class, 'downloadCard']);
 Route::post('/student/download/archive/card',[AuthFrontEndApplicationController::class, 'downloadArchivePdf']);
 
-Route::post('/student/web-socket', function (Request $request) {
-    try {
-        PaymentResponse::dispatch($request->user());
-    } catch (Exception $e) {
-        dd($e->getMessage());
-    }
-    Log::info("SOCKET ENVIADO");
-});
+
 
 Route::post('/student/webhook', function (Request $request) {
     try {

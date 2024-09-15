@@ -80,6 +80,7 @@ class AuthFrontEndApplicationController extends Controller
                 "step" => $step,
             ];
         } catch (\Exception $exception) {
+
             return [
                 "success" => false,
                 "message" => "Ocorreu um erro interno."
