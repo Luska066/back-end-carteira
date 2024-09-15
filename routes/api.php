@@ -1,5 +1,8 @@
 <?php
 
+use App\Enums\Steps;
+use App\Models\RegistrationStep;
+use App\Models\Step;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,7 +40,15 @@ Route::prefix('public')->group( function () {
                 }
                 $asaas_client = \App\Models\AsaasClient::where('costumer_id',$websocket["payment"]["customer"])->first();
                 $student = $asaas_client->student()->first();
-                \App\Events\PaymentResponse::dispatch($student->user()->first());
+                $user = $student->user()->first();
+                \App\Events\PaymentResponse::dispatch($user);
+                RegistrationStep::query()->updateOrCreate([
+                    'id_student' => $student->id,
+                    'id_step'=>Step::where('name',Steps::AGUARDANDOPAGAMENTO->value)->first()->id,
+                ],[
+                    'id_step'=>Step::where('name',Steps::AGUARDANDOPAGAMENTO->value)->first()->id,
+                    'id_student' => $student->id,
+                ]);
             }
         } catch (Exception $e) {
             \Illuminate\Support\Facades\Log::info("Error ao executar websocket",[
