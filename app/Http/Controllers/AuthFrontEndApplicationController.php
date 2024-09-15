@@ -156,6 +156,9 @@ class AuthFrontEndApplicationController extends Controller
 
         DB::beginTransaction();
         $student = $request->user()->getStudent();
+        if($student == null){
+            throw new \Exception("Estudante não encontrado");
+        }
         $course = StudentCurso::where('student_id', $student->id)->first();
         try {
             $carteira = Carteira::query()->updateOrCreate([
