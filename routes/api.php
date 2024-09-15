@@ -28,7 +28,17 @@ Route::prefix('public')->group( function () {
             \Illuminate\Support\Facades\Log::info("request websocket",[
                 "request" => $request
             ]);
-            \App\Events\PaymentResponse::dispatch($request->user());
+            $websocket = $request->all();
+            if($websocket["event"] == \App\Enums\EventWebhookAsaas::PAYMENT_RECEIVED->value){
+                $cobranca = \App\Models\AsaasCobranca::where('id_charge',$websocket["payment"]["id"])->first();
+                if($cobranca){
+                    $cobranca->status = $websocket["payment"]["status"];
+                    $cobranca->save();
+                }
+                $asaas_client = \App\Models\AsaasClient::where('costumer_id',$websocket["payment"]["customer"])->first();
+                $student = $asaas_client->student()->first();
+                \App\Events\PaymentResponse::dispatch($student->user()->first());
+            }
         } catch (Exception $e) {
             \Illuminate\Support\Facades\Log::info("Error ao executar websocket",[
                 'error' => $e->getMessage(),
