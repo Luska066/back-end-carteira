@@ -342,7 +342,7 @@ class AuthFrontEndApplicationController extends Controller
                 'foto',             // Nome do campo do arquivo
                 file_get_contents($filePath), // Conteúdo do arquivo
                 basename($filePath)  // Nome original do arquivo
-            )->post('http://localhost:1458/gerar-carteira', $fields);
+            )->post(Env('URL_MICROSSERVICE').'/gerar-carteira', $fields);
 
 
             Storage::delete($path);
